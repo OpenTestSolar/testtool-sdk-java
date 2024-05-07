@@ -52,3 +52,5 @@ jobs:
     # See: https://github.com/gradle/actions/blob/main/dependency-submission/README.md
     - name: Generate and submit dependency graph
       uses: gradle/actions/dependency-submission@v3 # v3.1.0
+      with:
+        use-gradlew: false
