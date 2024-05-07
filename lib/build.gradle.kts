@@ -8,13 +8,11 @@
 
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
-    alias(libs.plugins.jvm)
-
-    kotlin("plugin.serialization") version "1.9.22"
+    kotlin("jvm") version "1.9.24"
+    kotlin("plugin.serialization") version "1.9.24"
 
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
-
     `maven-publish`
 }
 
@@ -26,7 +24,7 @@ repositories {
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime-jvm:0.5.0")
-    implementation("commons-codec:commons-codec:1.16.1")
+    implementation("commons-codec:commons-codec:1.17.0")
 
     testImplementation("org.amshove.kluent:kluent:1.73")
 }
