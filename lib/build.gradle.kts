@@ -14,6 +14,7 @@ plugins {
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
     `maven-publish`
+    jacoco
 }
 
 repositories {
@@ -39,4 +40,12 @@ testing {
             useKotlinTest("1.9.20")
         }
     }
+}
+
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
 }
