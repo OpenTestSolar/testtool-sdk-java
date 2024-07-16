@@ -1,0 +1,10 @@
+{
+  "TaskId": "aa",
+  "ProjectPath": "/noroot/home/baby",
+  "FileReportPath": "/tmp/var/x/j29u83/xuh89/run",
+  "Collectors": ["."],
+  "Context": {},
+  "TestSelectors": [
+    "test_normal_case?test_success"
+  ]
+}

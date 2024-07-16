@@ -31,6 +31,11 @@ jobs:
           gradle-version: '8.7'
       - name: Build with Gradle 8.7
         run: gradle build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: lib/build/reports/jacoco/test/html
+          overwrite: true
       - name: Run Coverage
         run: |
           gradle jacocoTestCoverageVerification
