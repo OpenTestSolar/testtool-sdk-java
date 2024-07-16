@@ -60,8 +60,21 @@ tasks.jacocoTestCoverageVerification {
     }
 }
 
-version = "0.3.0"
-group = "com.tencent.testsolar"
+// ------------------------------------
+// PUBLISHING TO SONATYPE CONFIGURATION
+// ------------------------------------
+object Meta {
+    const val GROUP = "com.tencent.testsolar"
+    const val ARTIFACT_ID = "test_tool_sdk"
+    const val VERSION = "0.2.0"
+    const val DESC = "Java SDK for TestSolar TestTool"
+    const val LICENSE = "Apache-2.0"
+    const val LICENSE_URL = "https://opensource.org/licenses/Apache-2.0"
+    const val GITHUB_REPO = "OpenTestSolar/testtool-sdk-java.git"
+    const val DEVELOPER_ID = "asiazhang"
+    const val DEVELOPER_NAME = "asiazhang"
+    const val DEVELOPER_EMAIL = "asiazhang@gmail.com"
+}
 
 publishing {
     publications {
@@ -69,33 +82,40 @@ publishing {
             from(components["java"])
 
             // 设置发布的artifact的groupId, artifactId和version
-            groupId = project.group.toString()
-            artifactId = "test_tool_sdk"
-            version = project.version.toString()
+            groupId = Meta.GROUP
+            artifactId = Meta.ARTIFACT_ID
+            version = Meta.VERSION
 
             // 如果需要，可以添加其他元数据
             pom {
-                name.set("TestSolar TestTool Java SDK")
-                description.set("Java SDK for TestSolar TestTool")
-                url.set("https://github.com/OpenTestSolar/testtool-sdk-java")
+                name = Meta.ARTIFACT_ID
+                description = Meta.DESC
+                url = "https://github.com/${Meta.GITHUB_REPO}"
 
                 licenses {
                     license {
-                        name.set("The Apache License, Version 2.0")
-                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                        name = Meta.LICENSE
+                        url = Meta.LICENSE_URL
                     }
                 }
 
                 developers {
                     developer {
-                        id.set("developerId")
-                        name.set("asiazhang")
-                        email.set("asiazhang2002@gmail.com")
+                        id = Meta.DEVELOPER_ID
+                        name = Meta.DEVELOPER_NAME
+                        email = Meta.DEVELOPER_EMAIL
                     }
                 }
 
                 scm {
-                    url.set("https://github.com/OpenTestSolar/testtool-sdk-java")
+                    url = "https://github.com/${Meta.GITHUB_REPO}"
+                    connection = "scm:git:https://github.com/${Meta.GITHUB_REPO}"
+                    developerConnection = "scm:git:https://github.com/${Meta.GITHUB_REPO}"
+                }
+
+                issueManagement {
+                    system = "GitHub"
+                    url = "https://github.com/${Meta.GITHUB_REPO}/issues"
                 }
             }
         }
@@ -103,10 +123,12 @@ publishing {
 
     repositories {
         maven {
-            url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+            url = uri(
+                System.getenv("MAVEN_PUBLISH_URL") ?: "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            )
             credentials {
-                username = System.getenv("OSSRH_USERNAME") ?: ""
-                password = System.getenv("OSSRH_PASSWORD") ?: ""
+                username = System.getenv("MAVEN_PUBLISH_USERNAME") ?: "username must be set"
+                password = System.getenv("MAVEN_PUBLISH_PASSWORD") ?: "password must be set"
             }
         }
     }
