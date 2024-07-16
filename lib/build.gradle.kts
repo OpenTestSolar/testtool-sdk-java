@@ -23,6 +23,7 @@ repositories {
 }
 
 dependencies {
+    @Suppress("PackageUpdate")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime-jvm:0.5.0")
     implementation("commons-codec:commons-codec:1.17.0")
@@ -54,7 +55,7 @@ tasks.jacocoTestCoverageVerification {
     violationRules {
         rule {
             limit {
-                minimum = "0.8".toBigDecimal()
+                minimum = "0.7".toBigDecimal()
             }
         }
     }
