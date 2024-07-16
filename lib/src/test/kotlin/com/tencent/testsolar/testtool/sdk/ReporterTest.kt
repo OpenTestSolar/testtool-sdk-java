@@ -59,10 +59,10 @@ class ReporterTest {
             )
         )
         reporter.reportLoadResult(loadResult)
-        File(reporter.reportDir, "result.json").exists() shouldBe true
+        File(reporter.reportDir, LOAD_RESULT_FILE_NAME).exists() shouldBe true
 
         val json = Json { ignoreUnknownKeys = true }
-        val trJson = File(reporter.reportDir, "result.json").readText()
+        val trJson = File(reporter.reportDir, LOAD_RESULT_FILE_NAME).readText()
         val tr = json.decodeFromString<LoadResult>(trJson)
         tr shouldBeEqualTo loadResult
     }

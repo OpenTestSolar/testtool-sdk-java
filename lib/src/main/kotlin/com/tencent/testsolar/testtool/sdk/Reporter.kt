@@ -7,8 +7,11 @@ import kotlinx.serialization.json.Json
 import org.apache.commons.codec.digest.DigestUtils
 import java.io.File
 
+const val LOAD_RESULT_FILE_NAME = "result.json"
+
 // 提供上报用例相关结果到uniSDK
 class Reporter(taskId: String, val reportDir: String = "/home/testsolar") {
+
 
 
     private val json = Json { prettyPrint = true }
@@ -23,7 +26,7 @@ class Reporter(taskId: String, val reportDir: String = "/home/testsolar") {
         val raw: String = json.encodeToString(loadResult)
 
         File(reportDir).mkdirs()
-        File(reportDir, "result.json").writeText(raw)
+        File(reportDir, LOAD_RESULT_FILE_NAME).writeText(raw)
     }
 
     // 上报测试用例执行结果
