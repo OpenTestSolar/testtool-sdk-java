@@ -23,7 +23,6 @@ repositories {
 }
 
 dependencies {
-    @Suppress("PackageUpdate")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime-jvm:0.5.0")
     implementation("commons-codec:commons-codec:1.17.0")
@@ -56,6 +55,58 @@ tasks.jacocoTestCoverageVerification {
         rule {
             limit {
                 minimum = "0.7".toBigDecimal()
+            }
+        }
+    }
+}
+
+version = "0.3.0"
+group = "com.tencent.testsolar"
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+
+            // 设置发布的artifact的groupId, artifactId和version
+            groupId = project.group.toString()
+            artifactId = "test_tool_sdk"
+            version = project.version.toString()
+
+            // 如果需要，可以添加其他元数据
+            pom {
+                name.set("TestSolar TestTool Java SDK")
+                description.set("Java SDK for TestSolar TestTool")
+                url.set("https://github.com/OpenTestSolar/testtool-sdk-java")
+
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                    }
+                }
+
+                developers {
+                    developer {
+                        id.set("developerId")
+                        name.set("asiazhang")
+                        email.set("asiazhang2002@gmail.com")
+                    }
+                }
+
+                scm {
+                    url.set("https://github.com/OpenTestSolar/testtool-sdk-java")
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+            credentials {
+                username = System.getenv("OSSRH_USERNAME") ?: ""
+                password = System.getenv("OSSRH_PASSWORD") ?: ""
             }
         }
     }
