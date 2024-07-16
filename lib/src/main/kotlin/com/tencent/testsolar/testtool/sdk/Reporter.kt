@@ -8,10 +8,7 @@ import org.apache.commons.codec.digest.DigestUtils
 import java.io.File
 
 // 提供上报用例相关结果到uniSDK
-class Reporter(taskId: String, reportDir: String = "/home/testsolar") {
-
-    val loadReportDir = "${reportDir.trimEnd('/')}/task/$taskId/load"
-    val runReportDir = "${reportDir.trimEnd('/')}/task/$taskId/run"
+class Reporter(taskId: String, val reportDir: String = "/home/testsolar") {
 
 
     private val json = Json { prettyPrint = true }
@@ -25,16 +22,16 @@ class Reporter(taskId: String, reportDir: String = "/home/testsolar") {
     fun reportLoadResult(loadResult: LoadResult) {
         val raw: String = json.encodeToString(loadResult)
 
-        File(loadReportDir).mkdirs()
-        File(loadReportDir, "result.json").writeText(raw)
+        File(reportDir).mkdirs()
+        File(reportDir, "result.json").writeText(raw)
     }
 
     // 上报测试用例执行结果
     fun reportTestResult(testResult: TestResult) {
         val raw: String = json.encodeToString(testResult)
 
-        File(runReportDir).mkdirs()
-        File(runReportDir, generateRunCaseReportName(testResult)).writeText(raw)
+        File(reportDir).mkdirs()
+        File(reportDir, generateRunCaseReportName(testResult)).writeText(raw)
     }
 
     fun generateRunCaseReportName(testResult: TestResult): String {

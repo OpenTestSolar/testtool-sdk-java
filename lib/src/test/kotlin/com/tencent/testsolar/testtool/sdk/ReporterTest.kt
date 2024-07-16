@@ -35,7 +35,7 @@ class ReporterTest {
 
         reporter.reportLoadResult(LoadResult())
 
-        File(reporter.loadReportDir, "result.json").exists() shouldBe true
+        File(reporter.reportDir, "result.json").exists() shouldBe true
     }
 
     @Test
@@ -44,7 +44,7 @@ class ReporterTest {
 
         reporter.reportTestResult(testResult)
 
-        File(reporter.runReportDir, "bdbb21659ad26cf715254da0044ea375.json").exists() shouldBe true
+        File(reporter.reportDir, "bdbb21659ad26cf715254da0044ea375.json").exists() shouldBe true
     }
 
     @Test
@@ -60,8 +60,7 @@ class ReporterTest {
         @AfterAll
         fun cleanup() {
             val reporter = Reporter("1")
-            File(reporter.loadReportDir).deleteRecursively()
-            File(reporter.runReportDir).deleteRecursively()
+            File(reporter.reportDir).deleteRecursively()
         }
     }
 }
