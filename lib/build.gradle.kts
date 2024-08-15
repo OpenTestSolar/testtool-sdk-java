@@ -60,8 +60,8 @@ tasks.withType<KotlinCompile> {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11 // 设置 Java 源代码的兼容性版本为 1.8
-    targetCompatibility = JavaVersion.VERSION_11 // 设置 Java 字节码的目标版本为 1.8
+    sourceCompatibility = JavaVersion.VERSION_11 // 设置 Java 源代码的兼容性版本为 11
+    targetCompatibility = JavaVersion.VERSION_11 // 设置 Java 字节码的目标版本为 11
 }
 
 tasks.test {
