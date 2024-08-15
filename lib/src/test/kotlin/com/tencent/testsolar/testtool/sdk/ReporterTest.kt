@@ -7,9 +7,13 @@ import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.json.Json
 import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldBeEqualTo
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
 import java.io.File
+import kotlin.io.path.Path
+import kotlin.io.path.div
+import kotlin.io.path.exists
+import kotlin.io.path.readText
+
 
 class ReporterTest {
 
@@ -47,59 +51,67 @@ class ReporterTest {
 
     @Test
     fun reportLoadResult() {
-        val reporter = Reporter("aabbcc", "/tmp/testsolar")
-        val loadResult = LoadResult(
-            tests = mutableListOf(
-                TestCase(name = "aa/bb/cc?dd", attributes = hashMapOf()),
-                TestCase(name = "aa/bb/cc?ee", attributes = hashMapOf()),
-            ),
-            loadErrors = mutableListOf(
-                LoadError(name = "load error a", message = "load error"),
-                LoadError(name = "load error b", message = "load error"),
+        withTemporaryDirectory { tempDir ->
+            val output = Path(tempDir.toString()) / "result.json"
+            val reporter = Reporter("aabbcc", output.toString())
+            val loadResult = LoadResult(
+                tests = mutableListOf(
+                    TestCase(name = "aa/bb/cc?dd", attributes = hashMapOf()),
+                    TestCase(name = "aa/bb/cc?ee", attributes = hashMapOf()),
+                ),
+                loadErrors = mutableListOf(
+                    LoadError(name = "load error a", message = "load error"),
+                    LoadError(name = "load error b", message = "load error"),
+                )
             )
-        )
-        reporter.reportLoadResult(loadResult)
-        File(reporter.reportDir, LOAD_RESULT_FILE_NAME).exists() shouldBe true
+            reporter.reportLoadResult(loadResult)
+            output.exists() shouldBeEqualTo true
 
-        val json = Json { ignoreUnknownKeys = true }
-        val trJson = File(reporter.reportDir, LOAD_RESULT_FILE_NAME).readText()
-        val tr = json.decodeFromString<LoadResult>(trJson)
-        tr shouldBeEqualTo loadResult
+            val json = Json { ignoreUnknownKeys = true }
+            val trJson = output.readText()
+            val tr = json.decodeFromString<LoadResult>(trJson)
+            tr shouldBeEqualTo loadResult
+        }
+
+
     }
 
     @Test
     fun reportTestResult() {
-        val reporter = Reporter("xyz", "/tmp/testsolar")
+        withTemporaryDirectory { tempDir ->
+            val reporter = Reporter("xyz", tempDir.toString())
 
-        reporter.reportTestResult(testResult)
+            reporter.reportTestResult(testResult)
 
-        File(reporter.reportDir, "bdbb21659ad26cf715254da0044ea375.json").exists() shouldBe true
+            File(reporter.reportPath, "bdbb21659ad26cf715254da0044ea375.json").exists() shouldBe true
 
-        val json = Json { ignoreUnknownKeys = true }
-        val trJson = File(reporter.reportDir, "bdbb21659ad26cf715254da0044ea375.json").readText()
-        val tr = json.decodeFromString<TestResult>(trJson)
-        tr.test.name shouldBeEqualTo testResult.test.name
-        tr.test.attributes shouldBeEqualTo testResult.test.attributes
-        tr.context shouldBeEqualTo testResult.context
-        tr.startTime.second shouldBeEqualTo testResult.startTime.second
-        tr.endTime?.second shouldBeEqualTo testResult.endTime?.second
-        tr.resultType shouldBeEqualTo testResult.resultType
-        tr.steps.size shouldBeEqualTo testResult.steps.size
-        val step = tr.steps.first()
+            val json = Json { ignoreUnknownKeys = true }
+            val trJson = File(reporter.reportPath, "bdbb21659ad26cf715254da0044ea375.json").readText()
+            val tr = json.decodeFromString<TestResult>(trJson)
+            tr.test.name shouldBeEqualTo testResult.test.name
+            tr.test.attributes shouldBeEqualTo testResult.test.attributes
+            tr.context shouldBeEqualTo testResult.context
+            tr.startTime.second shouldBeEqualTo testResult.startTime.second
+            tr.endTime?.second shouldBeEqualTo testResult.endTime?.second
+            tr.resultType shouldBeEqualTo testResult.resultType
+            tr.steps.size shouldBeEqualTo testResult.steps.size
+            val step = tr.steps.first()
 
-        step.startTime.second shouldBeEqualTo testResult.startTime.second
-        step.endTime.second shouldBeEqualTo testResult.endTime?.second
-        step.resultType shouldBeEqualTo testResult.resultType
-        step.title shouldBeEqualTo "hello"
-        step.logs.size shouldBeEqualTo 1
-        step.logs[0].time.second shouldBeEqualTo testResult.startTime.second
-        step.logs[0].level shouldBeEqualTo TestLogLevel.INFO
-        step.logs[0].content shouldBeEqualTo "content"
-        step.logs[0].assertError?.expect shouldBeEqualTo "aa"
-        step.logs[0].assertError?.actual shouldBeEqualTo "content"
-        step.logs[0].assertError?.message shouldBeEqualTo "not equal"
-        step.logs[0].runtimeError?.summary shouldBeEqualTo "aaa"
-        step.logs[0].runtimeError?.detail shouldBeEqualTo "content"
+            step.startTime.second shouldBeEqualTo testResult.startTime.second
+            step.endTime.second shouldBeEqualTo testResult.endTime?.second
+            step.resultType shouldBeEqualTo testResult.resultType
+            step.title shouldBeEqualTo "hello"
+            step.logs.size shouldBeEqualTo 1
+            step.logs[0].time.second shouldBeEqualTo testResult.startTime.second
+            step.logs[0].level shouldBeEqualTo TestLogLevel.INFO
+            step.logs[0].content shouldBeEqualTo "content"
+            step.logs[0].assertError?.expect shouldBeEqualTo "aa"
+            step.logs[0].assertError?.actual shouldBeEqualTo "content"
+            step.logs[0].assertError?.message shouldBeEqualTo "not equal"
+            step.logs[0].runtimeError?.summary shouldBeEqualTo "aaa"
+            step.logs[0].runtimeError?.detail shouldBeEqualTo "content"
+        }
+
     }
 
     @Test
@@ -108,14 +120,5 @@ class ReporterTest {
         val path = reporter.generateRunCaseReportName(testResult)
 
         path shouldBeEqualTo "bdbb21659ad26cf715254da0044ea375.json"
-    }
-
-    companion object {
-        @JvmStatic
-        @AfterAll
-        fun cleanup() {
-            val reporter = Reporter("1")
-            File(reporter.reportDir).deleteRecursively()
-        }
     }
 }

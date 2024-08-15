@@ -1,10 +1,11 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.*
 
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
-    kotlin("jvm") version "1.9.24"
-    kotlin("plugin.serialization") version "1.9.24"
+    kotlin("jvm") version "2.0.10"
+    kotlin("plugin.serialization") version "2.0.10"
 
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
@@ -32,10 +33,11 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime-jvm:0.5.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime-jvm:0.6.0")
     implementation("commons-codec:commons-codec:1.17.0")
 
+    testImplementation("org.jetbrains.kotlinx:kotlinx-io-core:0.5.1")
     testImplementation("org.amshove.kluent:kluent:1.73")
 }
 
@@ -46,14 +48,14 @@ testing {
         val test by getting(JvmTestSuite::class) {
             // Use Kotlin Test framework
             @Suppress("UnstableApiUsage")
-            useKotlinTest("1.9.20")
+            useKotlinTest("2.0.10")
         }
     }
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "11" // 设置 Kotlin 编译器的目标版本为 11
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_11)
     }
 }
 
@@ -86,7 +88,7 @@ tasks.jacocoTestCoverageVerification {
 object Meta {
     const val GROUP = "com.tencent.testsolar"
     const val ARTIFACT_ID = "test_tool_sdk"
-    const val VERSION = "0.2.2"
+    const val VERSION = "0.3.0"
     const val DESC = "Java SDK for TestSolar TestTool"
     const val LICENSE = "Apache-2.0"
     const val LICENSE_URL = "https://opensource.org/licenses/Apache-2.0"
