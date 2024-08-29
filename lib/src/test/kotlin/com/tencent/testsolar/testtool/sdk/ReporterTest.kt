@@ -9,6 +9,7 @@ import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.jupiter.api.Test
 import java.io.File
+import java.nio.file.Paths
 import kotlin.io.path.Path
 import kotlin.io.path.div
 import kotlin.io.path.exists
@@ -83,11 +84,10 @@ class ReporterTest {
 
             reporter.reportTestResult(testResult)
 
-            File(reporter.reportPath, "bdbb21659ad26cf715254da0044ea375.json").exists() shouldBe true
+            val reportFile = File(reporter.reportPath, "bdbb21659ad26cf715254da0044ea375.json")
+            reportFile.exists() shouldBe true
 
-            val json = Json { ignoreUnknownKeys = true }
-            val trJson = File(reporter.reportPath, "bdbb21659ad26cf715254da0044ea375.json").readText()
-            val tr = json.decodeFromString<TestResult>(trJson)
+            val tr = readTestResult(Paths.get(reportFile.path))
             tr.test.name shouldBeEqualTo testResult.test.name
             tr.test.attributes shouldBeEqualTo testResult.test.attributes
             tr.context shouldBeEqualTo testResult.context
@@ -116,8 +116,7 @@ class ReporterTest {
 
     @Test
     fun generateRunCaseReportName() {
-        val reporter = Reporter("xyz")
-        val path = reporter.generateRunCaseReportName(testResult)
+        val path = generateRunCaseReportName(testResult.test)
 
         path shouldBeEqualTo "bdbb21659ad26cf715254da0044ea375.json"
     }
