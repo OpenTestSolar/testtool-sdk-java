@@ -88,7 +88,7 @@ tasks.jacocoTestCoverageVerification {
 object Meta {
     const val GROUP = "com.tencent.testsolar"
     const val ARTIFACT_ID = "test_tool_sdk"
-    const val VERSION = "0.3.1"
+    const val VERSION = "0.3.2"
     const val DESC = "Java SDK for TestSolar TestTool"
     const val LICENSE = "Apache-2.0"
     const val LICENSE_URL = "https://opensource.org/licenses/Apache-2.0"

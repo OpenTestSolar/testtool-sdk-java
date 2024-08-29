@@ -1,6 +1,7 @@
 package com.tencent.testsolar.testtool.sdk
 
 import com.tencent.testsolar.testtool.sdk.model.LoadResult
+import com.tencent.testsolar.testtool.sdk.model.TestCase
 import com.tencent.testsolar.testtool.sdk.model.TestResult
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -34,13 +35,13 @@ class Reporter(taskId: String, val reportPath: String = "/home/testsolar") {
         val raw: String = json.encodeToString(testResult)
 
         File(reportPath).mkdirs()
-        File(reportPath, generateRunCaseReportName(testResult)).writeText(raw)
+        File(reportPath, generateRunCaseReportName(testResult.test)).writeText(raw)
     }
+}
 
-    fun generateRunCaseReportName(testResult: TestResult): String {
-        val retryId: String = testResult.test.attributes.getOrDefault("retry", "0")
-        val fileName = DigestUtils.md5Hex("${testResult.test.name}.${retryId}") + ".json"
+fun generateRunCaseReportName(test: TestCase): String {
+    val retryId: String = test.attributes.getOrDefault("retry", "0")
+    val fileName = DigestUtils.md5Hex("${test.name}.${retryId}") + ".json"
 
-        return fileName
-    }
+    return fileName
 }
